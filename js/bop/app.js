@@ -1,3 +1,7 @@
+//
+// Dummy data for testing the UI
+//
+/*
 var bopData = {
  "extensions" : {
 	  "102" : {
@@ -118,6 +122,10 @@ var bopData = {
 	  }
    }
 };
+*/
+
+var bopData = {};
+var currentQ = 100;	// Set initial Q on page load
 
 $(document).foundation();
 
@@ -203,9 +211,6 @@ var killWorker = function() {
 }
 
 $(document).ready(function() {
-	// Set initial Q on page load
-	bopData.currentQ = 100;
-  
 	$(document.body).on('click', '.func_q_select', function(e) {
 		e.preventDefault();
 		rawData.currentQ = $(this).data('queue');
