@@ -77,7 +77,7 @@
 
 <!-- ########## tmpl_panelHeader ########## -->
 <script type="text/template" id="tmpl_panelHeader">
-<h1><%= currentQ || "No Q" %> : <%= (queues[currentQ])?queues[currentQ].name : "No Queue Selected" %> <span class="right">{ <% print((queues[currentQ])?_.size(queues[currentQ].activeCalls):'0'); %> }</span></h1>
+<h1><%= currentQ || "No Q" %> : <%= (queues[currentQ])?queues[currentQ].name : "No Queue Info Available" %> <span class="right">{ <% print((queues[currentQ])?_.size(queues[currentQ].activeCalls):'0'); %> }</span></h1>
 </script>
 
 <!-- ########## tmpl_userPanel ########## -->
