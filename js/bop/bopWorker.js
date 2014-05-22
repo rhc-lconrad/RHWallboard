@@ -1,4 +1,10 @@
+//
+// The Web Worker for RHWallboard
+//
+// It's just a simple thing
+//
 var getData = function() {
+	// This is our message prototype; we comminicate with the app via JSON-encapsulated objects
 	var message = {
 		type: 'data',
 		data: false
@@ -7,6 +13,7 @@ var getData = function() {
 	
 	var rq = new XMLHttpRequest();
 
+	// We expect to find our data as plaintext in /wallboard.html
 	rq.open('GET', '/wallboard.html', false);
 	rq.send(null);
 
@@ -22,4 +29,5 @@ var getData = function() {
 	setTimeout('getData()', 2000);
 };
 
+// Get it running
 getData();

@@ -124,9 +124,11 @@ var bopData = {
 };
 */
 
-var bopData = {};
+var bopData = {};	// Init empty dataset
 var currentQ = 100;	// Set initial Q on page load
+var dw;				// The Worker
 
+// Let's get Foundation Started
 $(document).foundation();
 
 // Thanks to MatthewKennedy @
@@ -165,58 +167,71 @@ var partial_panelCalls = function() {
 };
 
 var buildPanel = function() {
-	// Get the data
+	// Only init the more static components of the UI
 	partial_qMenu();
 	partial_panelHeader();
-	partial_panelUsers();
-	partial_panelCalls();
 };
 
 var refreshPanel = function() {
+	// (Re-)Init the more dynamic components of the UI
 	partial_panelUsers();
 	partial_panelCalls();
 };
 
-var dw;
 var initWorker = function() {
+	// Check if Web Workers are supported
 	if (typeof Worker !== "undefined") {
+		// Check if OUR worker is initialized
+		// If not, get it running
 		if (typeof dw == "undefined") {
 			dw = new Worker('js/bopWorker.js');
 		}
+		// The worker gives us JSON-encapsulated messages; Let's listen for them
 		dw.onmessage = function(e) {
 			var msg = event.data;
+
+			// If the message isn't an error, let's update the data object, and refresh the dynamic bits
 			if (msg.type != 'error') {
 				bopData = msg.data;
 				refreshPanel();
 			} else {
+				// If it's an error, let's note it on the console
 				console.log('bopWorker Error: ', msg.data);
 			}
 		};
 	} else {
+		// If we don't support Web Sockets, let's work around it
 		setInterval(function() {
 			var rq = new XMLHttpRequest();
 			var data = false;
 
+			// We're expecting to find the data in this file 
+			// We're also assuming that the data will be plaintext, parseable into JSON
 			rq.open('GET', '/wallboard.html', false);
 			rq.send(null);
 
 			if (rq.status >= 200 && rq.status < 400) {
-				bopData = JSON.parse(rq.responseText);
+				// If things look good, let's use it; account for empties, though
+				bopData = JSON.parse(rq.responseText || {});
 			}
 		}, 2000);
 	}
 };
+
+// A method to kill the worker if ever we need it; it's presently unimplemented
 var killWorker = function() {
 	dw.terminate();
-}
+};
 
+// Here is where the "magic" begins
 $(document).ready(function() {
+	// Delegate: Listen for changes in the current Q
 	$(document.body).on('click', '.func_q_select', function(e) {
 		e.preventDefault();
-		rawData.currentQ = $(this).data('queue');
+		currentQ = $(this).data('queue');
 		buildPanel();
 	});
 
 	buildPanel();
-	setInterval(refreshPanel, 2000);
+	initWorker();
 });
