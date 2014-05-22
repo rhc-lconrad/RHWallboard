@@ -77,7 +77,7 @@
 
 <!-- ########## tmpl_panelHeader ########## -->
 <script type="text/template" id="tmpl_panelHeader">
-<h1><%= currentQ %> : Customer Service <span class="right">{ <% print(_.size(queues[currentQ].activeCalls)); %> }</span></h1>
+<h1><%= currentQ %> : <%= queues[currentQ].name %> <span class="right">{ <% print(_.size(queues[currentQ].activeCalls)); %> }</span></h1>
 </script>
 
 <!-- ########## tmpl_userPanel ########## -->
