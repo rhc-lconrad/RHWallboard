@@ -170,13 +170,10 @@ var partial_panelCalls = function() {
 	$('#panelCalls').html(panelCalls(bopData));
 };
 
-var buildPanel = function() {
+var refreshPanel = function() {
 	// Only init the more static components of the UI
 	partial_qMenu();
 	partial_panelHeader();
-};
-
-var refreshPanel = function() {
 	// (Re-)Init the more dynamic components of the UI
 	partial_panelUsers();
 	partial_panelCalls();
@@ -233,9 +230,9 @@ $(document).ready(function() {
 	$(document.body).on('click', '.func_q_select', function(e) {
 		e.preventDefault();
 		currentQ = $(this).data('queue');
-		buildPanel();
+		refreshPanel();
 	});
 
-	buildPanel();
+	refreshPanel();
 	initWorker();
 });
