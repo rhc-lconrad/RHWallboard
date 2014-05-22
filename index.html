@@ -77,25 +77,29 @@
 
 <!-- ########## tmpl_panelHeader ########## -->
 <script type="text/template" id="tmpl_panelHeader">
-<h1><%= currentQ %> : <%= queues[currentQ].name %> <span class="right">{ <% print(_.size(queues[currentQ].activeCalls)); %> }</span></h1>
+<h1><%= currentQ || "No Q" %> : <%= (queues[currentQ])?queues[currentQ].name : "No Queue Selected" %> <span class="right">{ <% print((queues[currentQ])?_.size(queues[currentQ].activeCalls):'0'); %> }</span></h1>
 </script>
 
 <!-- ########## tmpl_userPanel ########## -->
 <script type="text/template" id="tmpl_panelUsers">
 <header class="small-12 columns" id="usersPanelHeader">
-	<h3 class="subheader"><strong>Users:</strong> <strong class="right"><% print( _.size(queues[currentQ].activeUsers) ); %></strong></h3>
+	<h3 class="subheader"><strong>Users:</strong> <strong class="right"><% print( (queues[currentQ])?_.size(queues[currentQ].activeUsers):"0" ); %></strong></h3>
 </header>
 
 <div id="userPanelsWrap" class="users small-12 columns isotope js-isotope" data-isotope-options='{ "itemSelector": ".user", "layoutMode": "fitRows"}'>
-<% _.each(queues[currentQ].activeUsers, function(num) { %>
-<%   if (extensions[num]) { %>
+<% if (queues[currentQ]) { %>
+<%	_.each(queues[currentQ].activeUsers, function(num) { %>
+<%		if (extensions[num]) { %>
 	<div class="panel user ext<%= num %> radius <%= extensions[num].status %>">
 		<h2 class="small-12 columns text-center"><%= num %></h2>
 		<h6 class="small-12 columns text-center tel"><%= (extensions[num].activeCall.length < 7)?'Ext. ' + extensions[num].activeCall:extensions[num].activeCall %></h6>
       <h6 class="small-12 columns text-center">Calls Taken: <%= queues[currentQ].member_stats[num].CallsTaken %></h6>
 	</div>
-<%   } %>
-<% }); %>
+<%		} %>
+<%	}); %>
+<% } else { %>
+	<h5>No Users in Queue</h5>
+<% } %>
 </div>
 </script>
 
@@ -106,13 +110,17 @@
 </header>
 
 <div class="small-12 columns isotope js-isotope calls" data-isotope-options='{ "layoutMode": "fitRows", "itemSelector": ".call" }'>
-<% _.each(queues[currentQ].activeCalls, function(call) { %>
+<% if (queues[currentQ]) { %>
+<%	_.each(queues[currentQ].activeCalls, function(call) { %>
 	<div class="panel call radius <%= call.status || 'default-status' %>">
 		<h2 class="small-6 center columns"><%= call.qtime %></h2>
 		<h6 class="small-12 columns tel"><%= (call.CallerIDNum.length < 7)?'Ext. ' + call.CallerIDNum:call.CallerIDNum %></h6>
       <h6 class="small-12 columns">Agent: <%= call.ConnectedLineNum %></h6>
 	</div>
-<% }); %>
+<%	}); %>
+<% } else { %>
+	<h5>No Calls in Queue</h5>
+<% } %>
 </div>
 </script>
 

@@ -124,7 +124,11 @@ var bopData = {
 };
 */
 
-var bopData = {};	// Init empty dataset
+var bopData = {
+	"extensions":{},
+	"queues":{},
+	"activeCalls":{}
+};	// Init empty dataset
 var currentQ = 100;	// Set initial Q on page load
 var dw;				// The Worker
 
@@ -184,11 +188,11 @@ var initWorker = function() {
 		// Check if OUR worker is initialized
 		// If not, get it running
 		if (typeof dw == "undefined") {
-			dw = new Worker('js/bopWorker.js');
+			dw = new Worker('js/bop/bopWorker.js');
 		}
 		// The worker gives us JSON-encapsulated messages; Let's listen for them
 		dw.onmessage = function(e) {
-			var msg = event.data;
+			var msg = JSON.parse(e.data);
 
 			// If the message isn't an error, let's update the data object, and refresh the dynamic bits
 			if (msg.type != 'error') {

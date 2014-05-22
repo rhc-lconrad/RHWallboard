@@ -7,7 +7,8 @@ var getData = function() {
 	// This is our message prototype; we comminicate with the app via JSON-encapsulated objects
 	var message = {
 		type: 'data',
-		data: false
+		data: false,
+		length: 0
 	};
 
 	
@@ -20,14 +21,17 @@ var getData = function() {
 	rq.send(null);
 
 	if (rq.status >= 200 && rq.status < 400) {
-		message.data = JSON.parse(rq.responseText);
+		var resp = rq.responseText;
+
+		if (resp.length === 0 || typeof resp != "string") {
+			message.data = {activeCalls:[], extensions:{}, queues:{} };
+		} else {
+			message.data = JSON.parse(resp);
+		}
 	}
 
-	if (message.data !== false) {
-		postMessage(message);
-	} else {
-		postMessage({type:'error', data:rq.status.toString()});
-	}
+	postMessage(JSON.stringify(message));
+
 	// Init the next read 2sec after the current read completes
 	setTimeout('getData()', 2000);
 };
